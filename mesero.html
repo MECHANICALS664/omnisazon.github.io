@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OmniSazón - Tomar Pedidos</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .mesero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .menu-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        /* Scroll personalizado para el menú */
+        .menu-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .menu-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .menu-grid::-webkit-scrollbar-thumb {
+            background: #4a7c59;
+            border-radius: 10px;
+        }
+        
+        .menu-grid::-webkit-scrollbar-thumb:hover {
+            background: #2c5530;
+        }
+        
+        .menu-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+            border-color: #4a7c59;
+        }
+        
+        .add-btn {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+        
+        .add-btn:hover {
+            background: #2c5530;
+        }
+        
+        .order-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        /* Scroll personalizado para el resumen del pedido */
+        .order-summary::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .order-summary::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .order-summary::-webkit-scrollbar-thumb {
+            background: #4a7c59;
+            border-radius: 10px;
+        }
+        
+        .order-summary::-webkit-scrollbar-thumb:hover {
+            background: #2c5530;
+        }
+        
+        .order-items-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+            padding-right: 5px;
+        }
+        
+        /* Scroll personalizado para items del pedido */
+        .order-items-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .order-items-container::-webkit-scrollbar-track {
+            background: #f8f8f8;
+            border-radius: 10px;
+        }
+        
+        .order-items-container::-webkit-scrollbar-thumb {
+            background: #4a7c59;
+            border-radius: 10px;
+        }
+        
+        .order-items-container::-webkit-scrollbar-thumb:hover {
+            background: #2c5530;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .quantity-btn {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .quantity-btn:hover {
+            background: #2c5530;
+        }
+        
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+        
+        .send-order {
+            background: #2c5530;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+        
+        .send-order:hover:not(:disabled) {
+            background: #4a7c59;
+            transform: translateY(-2px);
+        }
+        
+        .send-order:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .back-btn {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #2c5530;
+        }
+        
+        .order-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .table-number {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 120px;
+            text-align: center;
+        }
+        
+        .table-number:focus {
+            outline: none;
+            border-color: #4a7c59;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+            border-left: 4px solid #28a745;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .new-order-btn {
+            background: #4a7c59;
+            color: white;
+        }
+
+        .same-table-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+            font-style: italic;
+            background: #f8f8f8;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .temp-message {
+            background: #e8f5e8;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            border-left: 4px solid #28a745;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mesero-container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .menu-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                max-height: 400px;
+            }
+            
+            .order-summary {
+                max-height: 500px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-item {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .item-controls {
+                justify-content: center;
+            }
+        }
+
+        .section-title {
+            color: #2c5530;
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mesero-container">
+        <div class="header">
+            <div>
+                <h1>📝 Tomar Pedidos - Mesero</h1>
+                <p>Usuario: <span id="meseroName"></span></p>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Volver al Dashboard</a>
+        </div>
+
+        <div class="menu-section">
+            <h3 class="section-title">🌮 Menú Mexicano</h3>
+            <div class="scroll-indicator">🔽 Desplázate para ver todo el menú</div>
+            <div class="menu-grid" id="menuGrid">
+                <!-- Los items del menú se cargarán aquí con JavaScript -->
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <h3 class="section-title">📋 Pedido Actual - Mesa <input type="number" id="tableNumber" class="table-number" placeholder="Mesa #" min="1" max="20" value="1"></h3>
+            
+            <div class="order-items-container">
+                <div id="orderItems">
+                    <p style="text-align: center; color: #666; padding: 40px;" id="emptyOrderMessage">
+                        Tu pedido está vacío. Selecciona items del menú.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="order-info">
+                <div>
+                    <strong>Total: $<span id="totalAmount">0</span></strong>
+                </div>
+                <div>
+                    <strong>Items: <span id="itemCount">0</span></strong>
+                </div>
+            </div>
+            
+            <button class="send-order" id="sendOrderBtn" onclick="sendToKitchen()" disabled>
+                🚀 Enviar Pedido a Cocina
+            </button>
+            
+            <div id="successMessage" class="success-message">
+                <!-- Mensaje de éxito se mostrará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="cargar-menu.js"></script>
+    <script>
+        // ==================== DATOS DEL MENÚ MEXICANO ====================
+        const menuItems = [
+            // TACOS
+            { id: 1, name: "🌮 Tacos al Pastor", price: 45, category: "tacos" },
+            { id: 2, name: "🌯 Tacos de Carnitas", price: 42, category: "tacos" },
+            { id: 3, name: "🥩 Tacos de Bistec", price: 48, category: "tacos" },
+            { id: 4, name: "🐔 Tacos de Pollo", price: 40, category: "tacos" },
+            
+            // PLATOS FUERTES
+            { id: 5, name: "🍖 Mole Poblano", price: 85, category: "platos-fuertes" },
+            { id: 6, name: "🍗 Chiles en Nogada", price: 95, category: "platos-fuertes" },
+            { id: 7, name: "🥘 Pozole Rojo", price: 65, category: "platos-fuertes" },
+            { id: 8, name: "🍛 Enchiladas Verdes", price: 55, category: "platos-fuertes" },
+            { id: 9, name: "🌶️ Chilaquiles Rojos", price: 50, category: "platos-fuertes" },
+            
+            // ANTOJITOS
+            { id: 10, name: "🧀 Quesadillas", price: 35, category: "antojitos" },
+            { id: 11, name: "🥟 Flautas de Papa", price: 38, category: "antojitos" },
+            { id: 12, name: "🌽 Sopes de Chorizo", price: 32, category: "antojitos" },
+            { id: 13, name: "🫔 Gorditas de Chicharrón", price: 36, category: "antojitos" },
+            
+            // ENTRADAS
+            { id: 14, name: "🥑 Guacamole Fresco", price: 45, category: "entradas" },
+            { id: 15, name: "🧆 Totopos con Salsas", price: 25, category: "entradas" },
+            { id: 16, name: "🍤 Ceviche de Camarón", price: 65, category: "entradas" },
+            
+            // BEBIDAS
+            { id: 17, name: "🍹 Agua de Horchata", price: 25, category: "bebidas" },
+            { id: 18, name: "🍓 Agua de Jamaica", price: 25, category: "bebidas" },
+            { id: 19, name: "🍋 Limonada Fresca", price: 22, category: "bebidas" },
+            { id: 20, name: "🍺 Cerveza Corona", price: 35, category: "bebidas" },
+            { id: 21, name: "🥤 Refresco Mexicano", price: 20, category: "bebidas" },
+            
+            // POSTRES
+            { id: 22, name: "🍮 Flan Napolitano", price: 30, category: "postres" },
+            { id: 23, name: "🍰 Tres Leches", price: 35, category: "postres" },
+            { id: 24, name: "🍫 Churros con Chocolate", price: 28, category: "postres" },
+            { id: 25, name: "🍍 Pay de Queso con Zarzamora", price: 32, category: "postres" }
+        ];
+
+        // ==================== VARIABLES GLOBALES ====================
+        let currentOrder = [];
+        let orderTotal = 0;
+        let itemCount = 0;
+
+        // ==================== INICIALIZACIÓN ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar nombre del mesero
+            const meseroName = localStorage.getItem('currentUser') || 'Mesero';
+            document.getElementById('meseroName').textContent = meseroName;
+            
+            // Cargar menú
+            loadMenu();
+            
+            // Verificar que sea mesero
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'mesero') {
+                alert('❌ No tienes permisos de mesero');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+        });
+
+        // ==================== CARGAR MENÚ ====================
+        function loadMenu() {
+            // Intentar cargar desde la BD remota via backend
+            cargarMenuDesdeBackend();
+        }
+        
+        // Función fallback para cargar menú local si falla la BD
+        function loadMenuLocal() {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = '';
+            
+            menuItems.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+                menuItem.innerHTML = `
+                    <div>
+                        <div style="font-size: 32px; margin-bottom: 10px;">${item.name.split(' ')[0]}</div>
+                        <div style="font-weight: bold; margin-bottom: 8px;">${item.name}</div>
+                        <div style="color: #4a7c59; font-weight: bold; font-size: 18px; margin: 10px 0;">$${item.price}</div>
+                    </div>
+                    <button class="add-btn" onclick="addToOrder(${item.id})">
+                        ➕ Agregar
+                    </button>
+                `;
+                menuGrid.appendChild(menuItem);
+            });
+        }
+
+        // ==================== AGREGAR AL PEDIDO ====================
+        function addToOrder(itemId) {
+            console.log('Agregando item:', itemId);
+            
+            // Primero buscar en menuItems local
+            let item = menuItems.find(i => i.id === itemId);
+            
+            // Si no está en menuItems, buscar en platillosDelBackend
+            if (!item && typeof platillosDelBackend !== 'undefined') {
+                const platilloBackend = platillosDelBackend.find(p => p.id === itemId);
+                if (platilloBackend) {
+                    // Convertir formato del backend al formato esperado
+                    item = {
+                        id: platilloBackend.id,
+                        name: platilloBackend.nombre,
+                        price: platilloBackend.precio
+                    };
+                }
+            }
+            
+            if (!item) {
+                console.error('Item no encontrado:', itemId);
+                alert('❌ No se pudo encontrar el platillo');
+                return;
+            }
+            
+            // Verificar si el item ya está en el pedido
+            const existingItemIndex = currentOrder.findIndex(orderItem => orderItem.id === itemId);
+            
+            if (existingItemIndex !== -1) {
+                // Si ya existe, aumentar cantidad
+                currentOrder[existingItemIndex].quantity += 1;
+                currentOrder[existingItemIndex].subtotal = currentOrder[existingItemIndex].quantity * currentOrder[existingItemIndex].price;
+                console.log('Item existente, cantidad aumentada:', currentOrder[existingItemIndex]);
+            } else {
+                // Si no existe, agregar nuevo item
+                currentOrder.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1,
+                    subtotal: item.price
+                });
+                console.log('Nuevo item agregado:', item.name);
+            }
+            
+            updateOrderDisplay();
+            showSuccessFeedback(event.target, item.name);
+        }
+
+        // ==================== ACTUALIZAR CANTIDAD ====================
+        function updateQuantity(itemId, change) {
+            const itemIndex = currentOrder.findIndex(orderItem => orderItem.id === itemId);
+            if (itemIndex === -1) return;
+            
+            currentOrder[itemIndex].quantity += change;
+            
+            if (currentOrder[itemIndex].quantity <= 0) {
+                // Remover item si la cantidad es 0
+                currentOrder.splice(itemIndex, 1);
+            } else {
+                currentOrder[itemIndex].subtotal = currentOrder[itemIndex].quantity * currentOrder[itemIndex].price;
+            }
+            
+            updateOrderDisplay();
+        }
+
+        // ==================== REMOVER ITEM ====================
+        function removeItem(itemId) {
+            currentOrder = currentOrder.filter(orderItem => orderItem.id !== itemId);
+            updateOrderDisplay();
+        }
+
+        // ==================== ACTUALIZAR VISUALIZACIÓN DEL PEDIDO ====================
+        function updateOrderDisplay() {
+            const orderItems = document.getElementById('orderItems');
+            const totalAmount = document.getElementById('totalAmount');
+            const itemCountElement = document.getElementById('itemCount');
+            const emptyOrderMessage = document.getElementById('emptyOrderMessage');
+            const sendOrderBtn = document.getElementById('sendOrderBtn');
+            
+            // Calcular totales
+            orderTotal = currentOrder.reduce((sum, item) => sum + item.subtotal, 0);
+            itemCount = currentOrder.reduce((sum, item) => sum + item.quantity, 0);
+            
+            // Actualizar interfaz
+            if (currentOrder.length === 0) {
+                orderItems.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Tu pedido está vacío. Selecciona items del menú.</p>';
+                sendOrderBtn.disabled = true;
+            } else {
+                orderItems.innerHTML = '';
+                
+                currentOrder.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'order-item';
+                    div.innerHTML = `
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small style="color: #666;">$${item.price} c/u</small>
+                        </div>
+                        <div class="item-controls">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <span style="min-width: 30px; text-align: center; font-weight: bold;">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            <button class="remove-btn" onclick="removeItem(${item.id})">❌</button>
+                        </div>
+                        <div>
+                            <strong style="color: #2c5530;">$${item.subtotal}</strong>
+                        </div>
+                    `;
+                    orderItems.appendChild(div);
+                });
+                
+                sendOrderBtn.disabled = false;
+            }
+            
+            totalAmount.textContent = orderTotal;
+            itemCountElement.textContent = itemCount;
+        }
+
+        // ==================== ENVIAR A COCINA ====================
+        function sendToKitchen() {
+            if (currentOrder.length === 0) {
+                alert('❌ Agrega items al pedido primero');
+                return;
+            }
+            
+            const tableNumber = document.getElementById('tableNumber').value || '1';
+            
+            if (!tableNumber || tableNumber < 1) {
+                alert('❌ Por favor ingresa un número de mesa válido');
+                return;
+            }
+            
+            // Obtener pedidos existentes o crear array vacío
+            const orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
+            
+            // Crear nuevo pedido
+            const newOrder = {
+                id: Date.now(), // ID único basado en timestamp
+                table: parseInt(tableNumber),
+                items: JSON.parse(JSON.stringify(currentOrder)), // Copia profunda del array
+                total: orderTotal,
+                status: 'pendiente',
+                mesero: localStorage.getItem('currentUser') || 'Mesero',
+                timestamp: new Date().toLocaleTimeString(),
+                date: new Date().toLocaleDateString()
+            };
+            
+            // Agregar a la lista de pedidos
+            orders.push(newOrder);
+            
+            // Guardar en localStorage
+            localStorage.setItem('kitchenOrders', JSON.stringify(orders));
+            
+            // Mostrar mensaje de éxito con opciones
+            showOrderSummary(newOrder);
+            
+            console.log('Pedido enviado a cocina:', newOrder);
+            console.log('Total de pedidos en cocina:', orders.length);
+        }
+
+        // ==================== MOSTRAR RESUMEN DEL PEDIDO ENVIADO ====================
+        function showOrderSummary(order) {
+            const summary = document.getElementById('successMessage');
+            summary.innerHTML = `
+                ✅ ¡Pedido #${order.id.toString().slice(-4)} enviado a cocina!<br>
+                <div style="margin: 15px 0;">
+                    <strong>Mesa:</strong> ${order.table} | <strong>Total:</strong> $${order.total}<br>
+                    <strong>Items:</strong> ${order.items.reduce((sum, item) => sum + item.quantity, 0)}
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn new-order-btn" onclick="startNewOrder()">
+                        ➕ Nuevo Pedido
+                    </button>
+                    <button class="action-btn same-table-btn" onclick="keepAddingToOrder()">
+                        📝 Seguir en Mesa ${order.table}
+                    </button>
+                </div>
+            `;
+            summary.style.display = 'block';
+        }
+
+        // ==================== INICIAR NUEVO PEDIDO ====================
+        function startNewOrder() {
+            resetOrder();
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Incrementar automáticamente el número de mesa
+            const currentTable = parseInt(document.getElementById('tableNumber').value) || 1;
+            document.getElementById('tableNumber').value = currentTable + 1;
+            
+            // Mostrar mensaje temporal
+            showTempMessage(`🆕 Nuevo pedido - Mesa ${currentTable + 1}`);
+        }
+
+        // ==================== SEGUIR AGREGANDO A LA MISMA MESA ====================
+        function keepAddingToOrder() {
+            // Solo ocultar el mensaje, mantener el pedido actual para seguir agregando
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Mostrar mensaje de que pueden seguir agregando items
+            showTempMessage(`✅ Puedes seguir agregando items a la Mesa ${document.getElementById('tableNumber').value}`);
+        }
+
+        // ==================== MOSTRAR MENSAJE TEMPORAL ====================
+        function showTempMessage(message) {
+            // Remover mensajes temporales existentes
+            const existingTempMessages = document.querySelectorAll('.temp-message');
+            existingTempMessages.forEach(msg => msg.remove());
+            
+            const tempMessage = document.createElement('div');
+            tempMessage.className = 'temp-message';
+            tempMessage.innerHTML = message;
+            
+            const orderSummary = document.querySelector('.order-summary');
+            const orderItems = document.querySelector('.order-items-container');
+            orderSummary.insertBefore(tempMessage, orderItems);
+            
+            setTimeout(() => {
+                tempMessage.remove();
+            }, 3000);
+        }
+
+        // ==================== MOSTRAR FEEDBACK ====================
+        function showSuccessFeedback(button, itemName) {
+            const originalText = button.textContent;
+            const originalBackground = button.style.background;
+            
+            button.textContent = '✅ ¡Agregado!';
+            button.style.background = '#2ecc71';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = originalBackground;
+                button.disabled = false;
+            }, 1000);
+        }
+
+        // ==================== REINICIAR PEDIDO ====================
+        function resetOrder() {
+            currentOrder = [];
+            orderTotal = 0;
+            itemCount = 0;
+            updateOrderDisplay();
+        }
+    </script>
+</body>
+</html>

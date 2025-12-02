@@ -1,0 +1,57 @@
+[
+  {
+    "nombre": "torta ahogada",
+    "precio": 89.99,
+    "descripcion": ""
+  },
+  {
+    "nombre": "quesadilla",
+    "precio": 60.34,
+    "descripcion": ""
+  },
+  {
+    "nombre": "tacos al pastor",
+    "precio": 90.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "entomatadas",
+    "precio": 90.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "chilaquiles",
+    "precio": 120.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "enchiladas",
+    "precio": 202.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "pozole",
+    "precio": 129.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "Chiles en Nogada",
+    "precio": 150.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "aguachile",
+    "precio": 100.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "mole poblano",
+    "precio": 340.0,
+    "descripcion": ""
+  },
+  {
+    "nombre": "flautas",
+    "precio": 80.0,
+    "descripcion": ""
+  }
+]

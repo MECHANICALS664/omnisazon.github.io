@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OmniSazón - Login</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4a7c59;
+            box-shadow: 0 0 8px rgba(74, 124, 89, 0.3);
+        }
+        
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Formulario de Login -->
+        <form class="login-form" id="loginForm">
+            <div class="logo">
+                <h1>OmniSazón</h1>
+                <p class="slogan">Todos los sabores en un solo lugar</p>
+            </div>
+            <p class="welcome-text">Bienvenido al sistema</p>
+            
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" placeholder="Ingresa tu usuario" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Rol:</label>
+                <select id="role" required>
+                    <option value="">Selecciona tu rol</option>
+                    <option value="admin">Administrador</option>
+                    <option value="mesero">Mesero</option>
+                    <option value="cocinero">Cocinero</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="login-btn">Iniciar Sesión</button>
+            
+            <div id="errorMessage" class="error-message">
+                Error: No se pudo redirigir. Verifica que dashboard.html exista.
+            </div>
+        </form>
+
+        <!-- Información del restaurante -->
+        <div class="info">
+            <p class="txt-1">¡Bienvenido!</p>
+            <h2>OmniSazón</h2>
+            <hr />
+            <p class="txt-2">
+                Donde la tradición y la innovación se encuentran. 
+                Más de 20 años creando experiencias culinarias únicas 
+                con los sabores más auténticos de mexico.
+            </p>
+            <div class="features">
+                <div class="feature">🍽️ Cocina Mexicana</div>
+                <div class="feature"> Opciones tradicionales</div>
+                <div class="feature">🎉 Eventos Especiales</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificar si el formulario existe
+        const loginForm = document.getElementById('loginForm');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                console.log('Formulario enviado - función ejecutándose');
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const role = document.getElementById('role').value;
+                const errorMessage = document.getElementById('errorMessage');
+                
+                console.log('Datos:', { username, password, role });
+                
+                // Sistema de login simple
+                if (password === '123' && role !== '') {
+                    // Guardar información del usuario
+                    localStorage.setItem('currentUser', username);
+                    localStorage.setItem('userRole', role);
+                    
+                    console.log('Login exitoso, redirigiendo...');
+                    
+                    // Ocultar mensaje de error
+                    errorMessage.style.display = 'none';
+                    
+                    // Redirigir al dashboard
+                    try {
+                        window.location.href = 'dashboard.html';
+                    } catch (error) {
+                        console.error('Error al redirigir:', error);
+                        errorMessage.style.display = 'block';
+                    }
+                } else {
+                    if (password !== '123') {
+                        alert('Contraseña incorrecta.');
+                    } else if (role === '') {
+                        alert('Por favor selecciona un rol.');
+                    }
+                }
+            });
+        } else {
+            console.error('No se encontró el formulario de login');
+        }
+        
+        // Mensaje de consola para debugging
+        console.log('Página de login cargada correctamente');
+    </script>
+</body>
+</html>

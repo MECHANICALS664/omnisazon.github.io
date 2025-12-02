@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2c5530, #4a7c59);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    width: 850px;
+    height: 550px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.login-form {
+    flex: 1;
+    padding: 40px;
+    background: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo h1 {
+    color: #2c5530;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.slogan {
+    text-align: center;
+    color: #4a7c59;
+    font-style: italic;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.welcome-text {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4a7c59;
+    box-shadow: 0 0 8px rgba(74, 124, 89, 0.3);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: #4a7c59;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background: #2c5530;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 85, 48, 0.3);
+}
+
+.links {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.links a {
+    display: block;
+    color: #4a7c59;
+    text-decoration: none;
+    margin: 8px 0;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.links a:hover {
+    color: #2c5530;
+    text-decoration: underline;
+}
+
+.info {
+    flex: 1;
+    padding: 40px;
+    background: linear-gradient(135deg, #2c5530, #4a7c59);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.txt-1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.info h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.info hr {
+    width: 60px;
+    margin: 20px auto;
+    border: 2px solid #a8e6cf;
+    border-radius: 2px;
+}
+
+.txt-2 {
+    line-height: 1.7;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    font-size: 15px;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.feature {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+}
+
+/* Nuevos estilos para el login actualizado */
+.demo-accounts {
+    margin-top: 20px;
+    padding: 15px;
+    background: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #4a7c59;
+}
+
+.demo-accounts h4 {
+    margin-bottom: 10px;
+    color: #2c5530;
+}
+
+.demo-accounts p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+}
+
+select:focus {
+    outline: none;
+    border-color: #4a7c59;
+    box-shadow: 0 0 8px rgba(74, 124, 89, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 95%;
+        height: auto;
+        margin: 20px;
+    }
+    
+    .login-form, .info {
+        padding: 30px;
+    }
+    
+    .features {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .feature {
+        flex: 1;
+        min-width: 120px;
+    }
+}
