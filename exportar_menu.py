@@ -70,17 +70,30 @@ def export_table(db_path: Path, table: str):
     cur.execute(f"SELECT * FROM '{table}'")
     rows = cur.fetchall()
     out = []
-    for r in rows:
+    for idx, r in enumerate(rows):
         # r is sqlite3.Row, supports mapping access by column name
         nombre = r[name_col] if name_col and name_col in r.keys() else ''
         precio = r[price_col] if price_col and price_col in r.keys() else 0
         descripcion = r[desc_col] if desc_col and desc_col in r.keys() else ''
+        # try to get an ID column if present
+        id_val = None
+        for candidate in ('id', 'ID', 'Id'):
+            if candidate in r.keys():
+                try:
+                    id_val = int(r[candidate])
+                except Exception:
+                    id_val = None
+                break
+        # if no id in row, generate one based on index (safe and stable per run)
+        if id_val is None:
+            id_val = 1000000 + idx
         # Normalize types
         try:
             precio = float(precio) if precio is not None else 0
         except Exception:
             precio = 0
         out.append({
+            'id': id_val,
             'nombre': str(nombre).strip(),
             'precio': precio,
             'descripcion': str(descripcion).strip()

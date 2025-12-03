@@ -63,7 +63,7 @@ function mostrarMenuDeLaBD(platillos) {
                 <h3>${nombreCapitalizado}</h3>
                 <p class="precio">$${platillo.precio.toFixed(2)}</p>
             </div>
-            <button class="add-btn" onclick="addToOrder(${platillo.id})">
+            <button class="add-btn" onclick="addToOrder(${platillo.id}, this)">
                 ➕ Agregar
             </button>
         `;

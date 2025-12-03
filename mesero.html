@@ -524,7 +524,7 @@
                         <div style="font-weight: bold; margin-bottom: 8px;">${item.name}</div>
                         <div style="color: #4a7c59; font-weight: bold; font-size: 18px; margin: 10px 0;">$${item.price}</div>
                     </div>
-                    <button class="add-btn" onclick="addToOrder(${item.id})">
+                    <button class="add-btn" onclick="addToOrder(${item.id}, this)">
                         ➕ Agregar
                     </button>
                 `;
@@ -533,7 +533,7 @@
         }
 
         // ==================== AGREGAR AL PEDIDO ====================
-        function addToOrder(itemId) {
+        function addToOrder(itemId, buttonElem) {
             console.log('Agregando item:', itemId);
             
             // Primero buscar en menuItems local
@@ -579,7 +579,12 @@
             }
             
             updateOrderDisplay();
-            showSuccessFeedback(event.target, item.name);
+            try {
+                showSuccessFeedback(buttonElem || document.activeElement, item.name);
+            } catch (err) {
+                // Fallback: no button provided
+                console.warn('No se pudo mostrar feedback en el botón:', err);
+            }
         }
 
         // ==================== ACTUALIZAR CANTIDAD ====================
