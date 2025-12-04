@@ -22,29 +22,23 @@
             box-shadow: 0 0 8px rgba(74, 124, 89, 0.3);
         }
         
-        .error-message {
+        .login-message {
             color: red;
             text-align: center;
             margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
             display: none;
         }
         
-        .demo-info {
-            background: #e8f5e8;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 4px solid #4a7c59;
+        .success {
+            background: #d4edda;
+            color: #155724;
         }
         
-        .demo-info h4 {
-            margin-bottom: 10px;
-            color: #2c5530;
-        }
-        
-        .demo-info p {
-            margin: 5px 0;
-            font-size: 14px;
+        .error {
+            background: #f8d7da;
+            color: #721c24;
         }
         
         .loading {
@@ -67,12 +61,12 @@
             
             <div class="form-group">
                 <label for="username">Usuario:</label>
-                <input type="text" id="username" placeholder="Ej: mesero1, admin, cocinero1" required>
+                <input type="text" id="username" placeholder="Usuario" required>
             </div>
             
             <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" placeholder="Usa: 123" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
             </div>
             
             <div class="form-group">
@@ -86,26 +80,14 @@
             </div>
             
             <div id="loading" class="loading">
-                🔄 Conectando con el servidor...
+                🔄 Iniciando sesión...
             </div>
             
             <button type="submit" class="login-btn" id="loginBtn">
                 Iniciar Sesión
             </button>
             
-            <div id="errorMessage" class="error-message">
-                Error de conexión. Verifica que el servidor esté ejecutándose.
-            </div>
-            
-            <div class="demo-info">
-                <h4>📋 Cuentas de Prueba:</h4>
-                <p><strong>Administrador:</strong> admin / 123</p>
-                <p><strong>Mesero 1:</strong> mesero1 / 123</p>
-                <p><strong>Cocinero 1:</strong> cocinero1 / 123</p>
-                <p style="margin-top: 10px; font-size: 12px; color: #666;">
-                    Si el servidor no está disponible, usa el sistema local.
-                </p>
-            </div>
+            <div id="loginMessage" class="login-message"></div>
         </form>
 
         <!-- Información del restaurante -->
@@ -127,304 +109,93 @@
     </div>
 
     <script>
-        // ==================== CONFIGURACIÓN ====================
-        const BACKEND_URL = 'http://localhost:5000';
-        let backendDisponible = false;
-        
-        // ==================== ELEMENTOS DEL DOM ====================
-        let loginForm, usernameInput, passwordInput, roleSelect, loginBtn, loadingDiv, errorDiv;
-        
-        // ==================== INICIALIZACIÓN ====================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎬 Página de login cargada');
-            
-            // Obtener elementos
-            loginForm = document.getElementById('loginForm');
-            usernameInput = document.getElementById('username');
-            passwordInput = document.getElementById('password');
-            roleSelect = document.getElementById('role');
-            loginBtn = document.getElementById('loginBtn');
-            loadingDiv = document.getElementById('loading');
-            errorDiv = document.getElementById('errorMessage');
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const roleSelect = document.getElementById('role');
+            const loginBtn = document.getElementById('loginBtn');
+            const loadingDiv = document.getElementById('loading');
+            const messageDiv = document.getElementById('loginMessage');
             
             if (!loginForm) {
-                console.error('❌ No se encontró el formulario');
+                console.error('No se encontró el formulario de login');
                 return;
             }
             
-            // Configurar evento
-            loginForm.addEventListener('submit', handleLogin);
-            
-            // Verificar backend al cargar
-            checkBackendConnection();
-            
-            // Autocompletar para pruebas
-            setupAutocomplete();
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value;
+                const role = roleSelect.value;
+                
+                // Validaciones
+                if (!username) {
+                    showMessage('Por favor ingresa tu usuario', 'error');
+                    return;
+                }
+                
+                if (!password) {
+                    showMessage('Por favor ingresa tu contraseña', 'error');
+                    return;
+                }
+                
+                if (!role) {
+                    showMessage('Por favor selecciona un rol', 'error');
+                    return;
+                }
+                
+                // Mostrar carga
+                loginBtn.disabled = true;
+                loadingDiv.style.display = 'block';
+                messageDiv.style.display = 'none';
+                
+                // Procesar login
+                setTimeout(() => {
+                    processLogin(username, password, role);
+                }, 500);
+            });
         });
         
-        // ==================== VERIFICAR CONEXIÓN AL BACKEND ====================
-        async function checkBackendConnection() {
-            console.log('🔍 Verificando conexión al backend...');
-            loadingDiv.style.display = 'block';
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Verificando conexión...';
+        function processLogin(username, password, role) {
+            // Simular validación (en un sistema real aquí se conectaría a un servidor)
+            const loadingDiv = document.getElementById('loading');
+            const loginBtn = document.getElementById('loginBtn');
             
-            try {
-                const response = await fetch(`${BACKEND_URL}/`, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' },
-                    timeout: 5000 // 5 segundos timeout
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('✅ Backend conectado:', data.message);
-                    backendDisponible = true;
-                    showMessage('✅ Conectado al servidor', 'success');
-                } else {
-                    console.warn('⚠️ Backend respondió con error:', response.status);
-                    backendDisponible = false;
-                    showMessage('⚠️ Usando modo local', 'warning');
-                }
-            } catch (error) {
-                console.warn('❌ No se pudo conectar al backend:', error.message);
-                backendDisponible = false;
-                showMessage('⚠️ Usando modo local (sin servidor)', 'warning');
-            } finally {
-                loadingDiv.style.display = 'none';
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Iniciar Sesión';
-            }
-        }
-        
-        // ==================== MANEJAR LOGIN ====================
-        async function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-            const role = roleSelect.value;
-            
-            // Validaciones
-            if (!username || !password) {
-                showMessage('❌ Usuario y contraseña son requeridos', 'error');
-                return;
-            }
-            
-            if (!role) {
-                showMessage('❌ Por favor selecciona un rol', 'error');
-                return;
-            }
-            
-            // Deshabilitar botón durante el login
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Iniciando sesión...';
-            loadingDiv.style.display = 'block';
-            errorDiv.style.display = 'none';
-            
-            try {
-                if (backendDisponible) {
-                    console.log('🔄 Intentando login con backend...');
-                    await loginWithBackend(username, password, role);
-                } else {
-                    console.log('🔄 Usando login local...');
-                    loginLocal(username, password, role);
-                }
-            } catch (error) {
-                console.error('❌ Error en login:', error);
-                showMessage('❌ Error al iniciar sesión', 'error');
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Iniciar Sesión';
-                loadingDiv.style.display = 'none';
-            }
-        }
-        
-        // ==================== LOGIN CON BACKEND ====================
-        async function loginWithBackend(username, password, role) {
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-                
-                const data = await response.json();
-                console.log('📨 Respuesta del backend:', data);
-                
-                if (data.success) {
-                    // Verificar rol
-                    if (data.user.rol !== role) {
-                        const mensaje = `Tu cuenta es de ${data.user.rol}. Por favor selecciona: ${data.user.rol}`;
-                        showMessage(`⚠️ ${mensaje}`, 'warning');
-                        roleSelect.value = data.user.rol;
-                        return;
-                    }
-                    
-                    // Guardar datos en localStorage
-                    localStorage.setItem('currentUser', data.user.username);
-                    localStorage.setItem('userRole', data.user.rol);
-                    localStorage.setItem('userId', data.user.id);
-                    localStorage.setItem('userName', data.user.nombre);
-                    localStorage.setItem('loginMethod', 'backend');
-                    
-                    console.log('✅ Login exitoso con backend');
-                    showMessage('✅ Redirigiendo...', 'success');
-                    
-                    // Redirigir después de un breve delay
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1000);
-                    
-                } else {
-                    // Si falla el backend, intentar local
-                    console.warn('Backend rechazó login, intentando local...');
-                    loginLocal(username, password, role);
-                }
-                
-            } catch (error) {
-                console.error('🌐 Error de conexión con backend:', error);
-                // Fallback a local
-                loginLocal(username, password, role);
-            }
-        }
-        
-        // ==================== LOGIN LOCAL (RESPALDO) ====================
-        function loginLocal(username, password, role) {
-            console.log('🔄 Usando sistema local...');
-            
-            // Base de datos local de usuarios
-            const usuariosLocales = {
-                'admin': { 
-                    rol: 'admin', 
-                    nombre: 'Administrador',
-                    password: '123'
-                },
-                'mesero1': { 
-                    rol: 'mesero', 
-                    nombre: 'Carlos López',
-                    password: '123'
-                },
-                'mesero2': { 
-                    rol: 'mesero', 
-                    nombre: 'Ana Martínez',
-                    password: '123'
-                },
-                'cocinero1': { 
-                    rol: 'cocinero', 
-                    nombre: 'Pedro Sánchez',
-                    password: '123'
-                },
-                'cocinero2': { 
-                    rol: 'cocinero', 
-                    nombre: 'María González',
-                    password: '123'
-                }
-            };
-            
-            // Verificar usuario
-            const usuario = usuariosLocales[username];
-            
-            if (!usuario) {
-                showMessage('❌ Usuario no encontrado', 'error');
-                return;
-            }
-            
-            if (password !== usuario.password) {
-                showMessage('❌ Contraseña incorrecta', 'error');
-                return;
-            }
-            
-            if (usuario.rol !== role) {
-                const mensaje = `Este usuario es ${usuario.rol}. Selecciona: ${usuario.rol}`;
-                showMessage(`⚠️ ${mensaje}`, 'warning');
-                roleSelect.value = usuario.rol;
-                return;
-            }
-            
-            // Guardar datos en localStorage
+            // Guardar sesión en localStorage
             localStorage.setItem('currentUser', username);
-            localStorage.setItem('userRole', usuario.rol);
-            localStorage.setItem('userId', '1');
-            localStorage.setItem('userName', usuario.nombre);
-            localStorage.setItem('loginMethod', 'local');
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('userName', username);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('loginTime', new Date().toISOString());
             
-            console.log('✅ Login local exitoso');
-            showMessage('✅ Redirigiendo...', 'success');
+            // Mostrar mensaje de éxito
+            showMessage('✅ Inicio de sesión exitoso', 'success');
             
-            // Redirigir
+            // Restaurar botón
+            loginBtn.disabled = false;
+            loadingDiv.style.display = 'none';
+            
+            // Redirigir después de 1 segundo
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1000);
         }
         
-        // ==================== FUNCIONES AUXILIARES ====================
-        function showMessage(message, type) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            
-            // Colores según tipo
-            switch(type) {
-                case 'success':
-                    errorDiv.style.color = '#2c5530';
-                    errorDiv.style.background = '#e8f5e8';
-                    errorDiv.style.padding = '10px';
-                    errorDiv.style.borderRadius = '5px';
-                    break;
-                case 'warning':
-                    errorDiv.style.color = '#856404';
-                    errorDiv.style.background = '#fff3cd';
-                    errorDiv.style.padding = '10px';
-                    errorDiv.style.borderRadius = '5px';
-                    break;
-                case 'error':
-                    errorDiv.style.color = '#721c24';
-                    errorDiv.style.background = '#f8d7da';
-                    errorDiv.style.padding = '10px';
-                    errorDiv.style.borderRadius = '5px';
-                    break;
-            }
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('loginMessage');
+            messageDiv.textContent = text;
+            messageDiv.className = 'login-message ' + type;
+            messageDiv.style.display = 'block';
             
             // Ocultar mensaje después de 5 segundos
-            if (type !== 'error') {
+            if (type !== 'success') {
                 setTimeout(() => {
-                    errorDiv.style.display = 'none';
+                    messageDiv.style.display = 'none';
                 }, 5000);
             }
         }
-        
-        function setupAutocomplete() {
-            // Para facilitar pruebas
-            usernameInput.addEventListener('focus', function() {
-                if (!this.value) {
-                    this.value = 'mesero1';
-                    passwordInput.value = '123';
-                    roleSelect.value = 'mesero';
-                }
-            });
-            
-            // Tecla rápida para pruebas (Ctrl+Shift+D)
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-                    usernameInput.value = 'mesero1';
-                    passwordInput.value = '123';
-                    roleSelect.value = 'mesero';
-                    console.log('🔧 Datos de prueba cargados');
-                }
-            });
-        }
-        
-        // ==================== DEBUG ====================
-        console.log('=== RESTAURANTE OMNISAZÓN ===');
-        console.log('Frontend:', window.location.href);
-        console.log('Backend config:', BACKEND_URL);
-        console.log('LocalStorage disponible:', typeof localStorage !== 'undefined');
     </script>
 </body>
 </html>
