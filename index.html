@@ -5,47 +5,207 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OmniSazón - Login</title>
-    <link rel="stylesheet" href="style.css" />
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1b5e20 0%, #0d3b1c 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Formulario de Login */
+        .login-form {
+            flex: 1;
+            padding: 50px;
+            background: #fff;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #1b5e20;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .slogan {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #444;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .form-group input,
         select {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border: 2px solid #ddd;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
-            background: white;
+            transition: all 0.3s ease;
         }
-
+        
+        .form-group input:focus,
         select:focus {
             outline: none;
-            border-color: #4a7c59;
-            box-shadow: 0 0 8px rgba(74, 124, 89, 0.3);
+            border-color: #2e7d32;
+            box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .login-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .login-message {
-            color: red;
             text-align: center;
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 15px;
+            padding: 12px;
             border-radius: 8px;
             display: none;
+            font-size: 14px;
         }
         
         .success {
             background: #d4edda;
             color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
         .error {
             background: #f8d7da;
             color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         
         .loading {
             display: none;
             text-align: center;
-            color: #4a7c59;
+            color: #2e7d32;
             margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        /* Información del restaurante */
+        .info {
+            flex: 1;
+            padding: 50px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .txt-1 {
+            color: #1b5e20;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .info h2 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: #2e7d32;
+            margin: 20px 0;
+            width: 80px;
+        }
+        
+        .txt-2 {
+            color: #555;
+            line-height: 1.6;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .feature {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2e7d32;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .login-form, .info {
+                padding: 30px;
+            }
         }
     </style>
 </head>
@@ -109,6 +269,35 @@
     </div>
 
     <script>
+        // Base de datos de usuarios válidos
+        const usuariosValidos = {
+            'admin': { 
+                password: '123', 
+                rol: 'admin', 
+                nombre: 'Administrador' 
+            },
+            'mesero1': { 
+                password: '123', 
+                rol: 'mesero', 
+                nombre: 'Carlos López' 
+            },
+            'mesero2': { 
+                password: '123', 
+                rol: 'mesero', 
+                nombre: 'Ana Martínez' 
+            },
+            'cocinero1': { 
+                password: '123', 
+                rol: 'cocinero', 
+                nombre: 'Pedro Sánchez' 
+            },
+            'cocinero2': { 
+                password: '123', 
+                rol: 'cocinero', 
+                nombre: 'María González' 
+            }
+        };
+        
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('loginForm');
             const usernameInput = document.getElementById('username');
@@ -130,7 +319,10 @@
                 const password = passwordInput.value;
                 const role = roleSelect.value;
                 
-                // Validaciones
+                // Ocultar mensajes anteriores
+                messageDiv.style.display = 'none';
+                
+                // Validaciones básicas
                 if (!username) {
                     showMessage('Por favor ingresa tu usuario', 'error');
                     return;
@@ -149,33 +341,65 @@
                 // Mostrar carga
                 loginBtn.disabled = true;
                 loadingDiv.style.display = 'block';
-                messageDiv.style.display = 'none';
                 
-                // Procesar login
+                // Procesar login después de 500ms
                 setTimeout(() => {
                     processLogin(username, password, role);
                 }, 500);
             });
         });
         
-        function processLogin(username, password, role) {
-            // Simular validación (en un sistema real aquí se conectaría a un servidor)
+        function processLogin(username, password, selectedRole) {
             const loadingDiv = document.getElementById('loading');
             const loginBtn = document.getElementById('loginBtn');
+            const messageDiv = document.getElementById('loginMessage');
             
-            // Guardar sesión en localStorage
+            // Buscar el usuario en la base de datos
+            const usuario = usuariosValidos[username];
+            
+            // Verificar si el usuario existe
+            if (!usuario) {
+                showMessage('❌ Usuario incorrecto', 'error');
+                loginBtn.disabled = false;
+                loadingDiv.style.display = 'none';
+                return;
+            }
+            
+            // Verificar contraseña
+            if (password !== usuario.password) {
+                showMessage('❌ Contraseña incorrecta', 'error');
+                loginBtn.disabled = false;
+                loadingDiv.style.display = 'none';
+                return;
+            }
+            
+            // Verificar rol
+            if (selectedRole !== usuario.rol) {
+                showMessage(`❌ Este usuario no tiene permisos de ${selectedRole}`, 'error');
+                loginBtn.disabled = false;
+                loadingDiv.style.display = 'none';
+                return;
+            }
+            
+            // Login exitoso
+            showMessage('✅ Inicio de sesión exitoso', 'success');
+            
+            // Guardar información del usuario
             localStorage.setItem('currentUser', username);
-            localStorage.setItem('userRole', role);
-            localStorage.setItem('userName', username);
+            localStorage.setItem('userRole', usuario.rol);
+            localStorage.setItem('userName', usuario.nombre);
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('loginTime', new Date().toISOString());
-            
-            // Mostrar mensaje de éxito
-            showMessage('✅ Inicio de sesión exitoso', 'success');
             
             // Restaurar botón
             loginBtn.disabled = false;
             loadingDiv.style.display = 'none';
+            
+            console.log('Login exitoso:', {
+                usuario: username,
+                rol: usuario.rol,
+                nombre: usuario.nombre
+            });
             
             // Redirigir después de 1 segundo
             setTimeout(() => {
@@ -189,8 +413,8 @@
             messageDiv.className = 'login-message ' + type;
             messageDiv.style.display = 'block';
             
-            // Ocultar mensaje después de 5 segundos
-            if (type !== 'success') {
+            // Ocultar mensaje después de 5 segundos (solo errores)
+            if (type === 'error') {
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
                 }, 5000);
