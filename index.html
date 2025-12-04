@@ -1,356 +1,127 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OmniSazón - Login</title>
+    <link rel="stylesheet" href="style.css" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-        }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1b5e20 0%, #0d3b1c 100%);
-            color: white;
-        }
-
-        /* ===== CONTENEDOR PRINCIPAL ===== */
-        .main-container {
-            display: flex;
+        select {
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* ===== LADO IZQUIERDO - LOGIN CENTRADO ===== */
-        .login-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-
-        .login-box {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 50px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo h1 {
-            font-size: 38px;
-            font-weight: 700;
-            color: #1b5e20;
-            margin-bottom: 8px;
-        }
-
-        .logo .tagline {
-            font-size: 16px;
-            color: #666;
-            font-weight: 300;
-        }
-
-        .welcome-text {
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 35px;
-            color: #333;
-            font-weight: 400;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 15px;
-            color: #444;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 16px;
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            color: #333;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .form-input::placeholder {
-            color: #999;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #2e7d32;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
-        }
-
-        .password-container {
-            position: relative;
-        }
-
-        .show-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            letter-spacing: 0.5px;
-        }
-
-        .login-btn:hover {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .links {
-            margin-top: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            text-align: center;
-        }
-
-        .link {
-            color: #2e7d32;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
-            font-weight: 500;
-        }
-
-        .link:hover {
-            color: #1b5e20;
-            text-decoration: underline;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #d32f2f;
             padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4a7c59;
+            box-shadow: 0 0 8px rgba(74, 124, 89, 0.3);
+        }
+        
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .demo-info {
+            background: #e8f5e8;
+            padding: 15px;
             border-radius: 8px;
             margin-top: 20px;
+            border-left: 4px solid #4a7c59;
+        }
+        
+        .demo-info h4 {
+            margin-bottom: 10px;
+            color: #2c5530;
+        }
+        
+        .demo-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .loading {
             display: none;
-            font-size: 14px;
-            border: 1px solid #ffcdd2;
             text-align: center;
-        }
-
-        /* ===== LADO DERECHO - RECUADRO CON TEXTO ===== */
-        .info-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-
-        .info-box {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 50px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            border-top: 5px solid #2e7d32;
-        }
-
-        .info-title {
-            font-size: 32px;
-            color: #1b5e20;
-            margin-bottom: 25px;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .info-text {
-            font-size: 17px;
-            line-height: 1.8;
-            color: #444;
-            text-align: justify;
-            font-style: italic;
-            padding: 0 10px;
-        }
-
-        .highlight {
-            color: #1b5e20;
-            font-weight: 600;
-            font-style: normal;
-        }
-
-        .footer {
-            margin-top: 40px;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            width: 100%;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .main-container {
-                flex-direction: column;
-                padding: 20px;
-            }
-            
-            .login-container, .info-container {
-                padding: 20px;
-            }
-            
-            .login-box, .info-box {
-                padding: 40px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .login-box, .info-box {
-                padding: 30px;
-            }
-            
-            .logo h1 {
-                font-size: 32px;
-            }
-            
-            .info-title {
-                font-size: 28px;
-            }
-            
-            .info-text {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-box, .info-box {
-                padding: 25px;
-            }
-            
-            .logo h1 {
-                font-size: 28px;
-            }
-            
-            .info-title {
-                font-size: 24px;
-            }
-            
-            .info-text {
-                font-size: 15px;
-            }
+            color: #4a7c59;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- LADO IZQUIERDO - LOGIN CENTRADO -->
-        <div class="login-container">
-            <div class="login-box">
-                <div class="logo">
-                    <h1>OmniSazón</h1>
-                    <div class="tagline">Todos los sabores en un solo lugar</div>
-                </div>
-                
-                <div class="welcome-text">Bienvenido al sistema</div>
-                
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="username">Usuario:</label>
-                        <input type="text" id="username" class="form-input" placeholder="Ingresa tu usuario" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Contraseña:</label>
-                        <div class="password-container">
-                            <input type="password" id="password" class="form-input" placeholder="Ingresa tu contraseña" required>
-                            <button type="button" class="show-password" id="togglePassword">Mostrar</button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="role">Rol:</label>
-                        <select id="role" class="form-input" required>
-                            <option value="">Selecciona tu rol</option>
-                            <option value="admin">Administrador</option>
-                            <option value="mesero">Mesero</option>
-                            <option value="cocinero">Cocinero</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="login-btn">Iniciar Sesión</button>
-                    
-                    <div id="errorMessage" class="error-message">
-                        Usuario o contraseña incorrecto
-                    </div>
-                    
-                    <div class="links">
-                        <a href="#" class="link">¿Olvidaste tu contraseña?</a>
-                        <a href="#" class="link">Registrar nuevo empleado</a>
-                    </div>
-                </form>
+    <div class="container">
+        <!-- Formulario de Login -->
+        <form class="login-form" id="loginForm">
+            <div class="logo">
+                <h1>OmniSazón</h1>
+                <p class="slogan">Todos los sabores en un solo lugar</p>
             </div>
-        </div>
-        
-        <!-- LADO DERECHO - RECUADRO CON TEXTO -->
-        <div class="info-container">
-            <div class="info-box">
-                <h2 class="info-title">Nuestra Historia</h2>
-                <p class="info-text">
-                    Donde la <span class="highlight">tradición</span> y la <span class="highlight">innovación</span> están más de 20 años creando experiencias culinarias únicas con los sabores más tradicionales del país. Nuestro compromiso es ofrecer lo mejor de la gastronomía nacional con un toque contemporáneo.
-                </p>
-                
-                <p class="info-text" style="margin-top: 20px;">
-                    Cada plato cuenta una historia, cada sabor evoca un recuerdo. En OmniSazón, fusionamos lo ancestral con lo moderno para brindarte una experiencia gastronómica inolvidable que celebra la riqueza culinaria de nuestra tierra.
-                </p>
+            <p class="welcome-text">Bienvenido al sistema</p>
+            
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" placeholder="Ej: mesero1, admin, cocinero1" required>
             </div>
             
-            <div class="footer">
-                ¡Gracias por visitarnos! © 2024 OmniSazón
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" placeholder="Usa: 123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Rol:</label>
+                <select id="role" required>
+                    <option value="">Selecciona tu rol</option>
+                    <option value="admin">Administrador</option>
+                    <option value="mesero">Mesero</option>
+                    <option value="cocinero">Cocinero</option>
+                </select>
+            </div>
+            
+            <div id="loading" class="loading">
+                🔄 Conectando con el servidor...
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">
+                Iniciar Sesión
+            </button>
+            
+            <div id="errorMessage" class="error-message">
+                Error de conexión. Verifica que el servidor esté ejecutándose.
+            </div>
+            
+            <div class="demo-info">
+                <h4>📋 Cuentas de Prueba:</h4>
+                <p><strong>Administrador:</strong> admin / 123</p>
+                <p><strong>Mesero 1:</strong> mesero1 / 123</p>
+                <p><strong>Cocinero 1:</strong> cocinero1 / 123</p>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    Si el servidor no está disponible, usa el sistema local.
+                </p>
+            </div>
+        </form>
+
+        <!-- Información del restaurante -->
+        <div class="info">
+            <p class="txt-1">¡Bienvenido!</p>
+            <h2>OmniSazón</h2>
+            <hr />
+            <p class="txt-2">
+                Donde la tradición y la innovación se encuentran. 
+                Más de 20 años creando experiencias culinarias únicas 
+                con los sabores más auténticos de México.
+            </p>
+            <div class="features">
+                <div class="feature">🍽️ Cocina Mexicana</div>
+                <div class="feature">🌮 Opciones Tradicionales</div>
+                <div class="feature">🎉 Eventos Especiales</div>
             </div>
         </div>
     </div>
@@ -358,80 +129,125 @@
     <script>
         // ==================== CONFIGURACIÓN ====================
         const BACKEND_URL = 'http://localhost:5000';
+        let backendDisponible = false;
         
-        // ==================== FUNCIONALIDAD MOSTRAR/OCULTAR CONTRASEÑA ====================
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const toggleButton = document.getElementById('togglePassword');
+        // ==================== ELEMENTOS DEL DOM ====================
+        let loginForm, usernameInput, passwordInput, roleSelect, loginBtn, loadingDiv, errorDiv;
+        
+        // ==================== INICIALIZACIÓN ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎬 Página de login cargada');
             
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleButton.textContent = 'Ocultar';
-            } else {
-                passwordInput.type = 'password';
-                toggleButton.textContent = 'Mostrar';
+            // Obtener elementos
+            loginForm = document.getElementById('loginForm');
+            usernameInput = document.getElementById('username');
+            passwordInput = document.getElementById('password');
+            roleSelect = document.getElementById('role');
+            loginBtn = document.getElementById('loginBtn');
+            loadingDiv = document.getElementById('loading');
+            errorDiv = document.getElementById('errorMessage');
+            
+            if (!loginForm) {
+                console.error('❌ No se encontró el formulario');
+                return;
             }
+            
+            // Configurar evento
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // Verificar backend al cargar
+            checkBackendConnection();
+            
+            // Autocompletar para pruebas
+            setupAutocomplete();
         });
         
-        // ==================== VERIFICAR CONEXIÓN ====================
-        async function verificarBackend() {
+        // ==================== VERIFICAR CONEXIÓN AL BACKEND ====================
+        async function checkBackendConnection() {
+            console.log('🔍 Verificando conexión al backend...');
+            loadingDiv.style.display = 'block';
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Verificando conexión...';
+            
             try {
-                const response = await fetch(`${BACKEND_URL}/`);
-                const data = await response.json();
-                console.log('✅ Backend conectado:', data.message);
-                return true;
+                const response = await fetch(`${BACKEND_URL}/`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' },
+                    timeout: 5000 // 5 segundos timeout
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend conectado:', data.message);
+                    backendDisponible = true;
+                    showMessage('✅ Conectado al servidor', 'success');
+                } else {
+                    console.warn('⚠️ Backend respondió con error:', response.status);
+                    backendDisponible = false;
+                    showMessage('⚠️ Usando modo local', 'warning');
+                }
             } catch (error) {
-                console.log('⚠️ Usando modo local (sin servidor)');
-                return false;
+                console.warn('❌ No se pudo conectar al backend:', error.message);
+                backendDisponible = false;
+                showMessage('⚠️ Usando modo local (sin servidor)', 'warning');
+            } finally {
+                loadingDiv.style.display = 'none';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Iniciar Sesión';
             }
         }
         
-        // ==================== LOGIN MEJORADO ====================
-        async function login(event) {
+        // ==================== MANEJAR LOGIN ====================
+        async function handleLogin(event) {
             event.preventDefault();
             
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
-            const errorMessage = document.getElementById('errorMessage');
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const role = roleSelect.value;
             
-            console.log(`🔐 Intentando login: ${username} / ${role}`);
-            
-            // Validaciones básicas
-            if (!role) {
-                errorMessage.textContent = 'Por favor selecciona un rol';
-                errorMessage.style.display = 'block';
-                return;
-            }
-            
+            // Validaciones
             if (!username || !password) {
-                errorMessage.textContent = 'Usuario y contraseña son requeridos';
-                errorMessage.style.display = 'block';
+                showMessage('❌ Usuario y contraseña son requeridos', 'error');
                 return;
             }
             
-            // Ocultar mensajes de error previos
-            errorMessage.style.display = 'none';
+            if (!role) {
+                showMessage('❌ Por favor selecciona un rol', 'error');
+                return;
+            }
             
-            // Primero intentar con el backend
-            const backendDisponible = await verificarBackend();
+            // Deshabilitar botón durante el login
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Iniciando sesión...';
+            loadingDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
             
-            if (backendDisponible) {
-                console.log('🔄 Intentando login con backend...');
-                await loginConBackend(username, password, role, errorMessage);
-            } else {
-                console.log('🔄 Usando login local...');
-                loginLocal(username, password, role, errorMessage);
+            try {
+                if (backendDisponible) {
+                    console.log('🔄 Intentando login con backend...');
+                    await loginWithBackend(username, password, role);
+                } else {
+                    console.log('🔄 Usando login local...');
+                    loginLocal(username, password, role);
+                }
+            } catch (error) {
+                console.error('❌ Error en login:', error);
+                showMessage('❌ Error al iniciar sesión', 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Iniciar Sesión';
+                loadingDiv.style.display = 'none';
             }
         }
         
-        // ==================== LOGIN CON BACKEND (PYTHON) ====================
-        async function loginConBackend(username, password, role, errorMessage) {
+        // ==================== LOGIN CON BACKEND ====================
+        async function loginWithBackend(username, password, role) {
             try {
                 const response = await fetch(`${BACKEND_URL}/api/login`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         username: username,
@@ -440,113 +256,175 @@
                 });
                 
                 const data = await response.json();
-                console.log('📨 Respuesta backend:', data);
+                console.log('📨 Respuesta del backend:', data);
                 
                 if (data.success) {
-                    // Verificar que el rol coincida
+                    // Verificar rol
                     if (data.user.rol !== role) {
-                        errorMessage.textContent = 'Usuario o contraseña incorrecto';
-                        errorMessage.style.display = 'block';
+                        const mensaje = `Tu cuenta es de ${data.user.rol}. Por favor selecciona: ${data.user.rol}`;
+                        showMessage(`⚠️ ${mensaje}`, 'warning');
+                        roleSelect.value = data.user.rol;
                         return;
                     }
                     
-                    // Guardar información
+                    // Guardar datos en localStorage
                     localStorage.setItem('currentUser', data.user.username);
                     localStorage.setItem('userRole', data.user.rol);
                     localStorage.setItem('userId', data.user.id);
                     localStorage.setItem('userName', data.user.nombre);
+                    localStorage.setItem('loginMethod', 'backend');
                     
                     console.log('✅ Login exitoso con backend');
+                    showMessage('✅ Redirigiendo...', 'success');
                     
-                    // Redirigir
-                    errorMessage.style.display = 'none';
-                    window.location.href = 'dashboard.html';
+                    // Redirigir después de un breve delay
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
                     
                 } else {
-                    console.warn('❌ Backend rechazó login:', data.message);
-                    errorMessage.textContent = 'Usuario o contraseña incorrecto';
-                    errorMessage.style.display = 'block';
+                    // Si falla el backend, intentar local
+                    console.warn('Backend rechazó login, intentando local...');
+                    loginLocal(username, password, role);
                 }
                 
             } catch (error) {
-                console.error('🌐 Error de conexión:', error);
-                errorMessage.textContent = 'Error de conexión. Usando modo local...';
-                errorMessage.style.display = 'block';
-                // Usar login local como respaldo
-                loginLocal(username, password, role, errorMessage);
+                console.error('🌐 Error de conexión con backend:', error);
+                // Fallback a local
+                loginLocal(username, password, role);
             }
         }
         
         // ==================== LOGIN LOCAL (RESPALDO) ====================
-        function loginLocal(username, password, role, errorMessage) {
+        function loginLocal(username, password, role) {
             console.log('🔄 Usando sistema local...');
             
-            // Usuarios locales de prueba
+            // Base de datos local de usuarios
             const usuariosLocales = {
-                'admin': { rol: 'admin', nombre: 'Administrador', password: '123' },
-                'mesero1': { rol: 'mesero', nombre: 'Carlos López', password: '123' },
-                'mesero2': { rol: 'mesero', nombre: 'Ana Martínez', password: '123' },
-                'cocinero1': { rol: 'cocinero', nombre: 'Pedro Sánchez', password: '123' },
-                'cocinero2': { rol: 'cocinero', nombre: 'María González', password: '123' }
+                'admin': { 
+                    rol: 'admin', 
+                    nombre: 'Administrador',
+                    password: '123'
+                },
+                'mesero1': { 
+                    rol: 'mesero', 
+                    nombre: 'Carlos López',
+                    password: '123'
+                },
+                'mesero2': { 
+                    rol: 'mesero', 
+                    nombre: 'Ana Martínez',
+                    password: '123'
+                },
+                'cocinero1': { 
+                    rol: 'cocinero', 
+                    nombre: 'Pedro Sánchez',
+                    password: '123'
+                },
+                'cocinero2': { 
+                    rol: 'cocinero', 
+                    nombre: 'María González',
+                    password: '123'
+                }
             };
             
-            // Verificar si el usuario existe
-            if (!usuariosLocales[username]) {
-                console.warn('❌ Usuario no existe:', username);
-                errorMessage.textContent = 'Usuario o contraseña incorrecto';
-                errorMessage.style.display = 'block';
-                return;
-            }
-            
+            // Verificar usuario
             const usuario = usuariosLocales[username];
             
-            // Verificar contraseña
+            if (!usuario) {
+                showMessage('❌ Usuario no encontrado', 'error');
+                return;
+            }
+            
             if (password !== usuario.password) {
-                console.warn('❌ Contraseña incorrecta para:', username);
-                errorMessage.textContent = 'Usuario o contraseña incorrecto';
-                errorMessage.style.display = 'block';
+                showMessage('❌ Contraseña incorrecta', 'error');
                 return;
             }
             
-            // Verificar rol
             if (usuario.rol !== role) {
-                console.warn(`❌ Rol incorrecto. Usuario ${username} es ${usuario.rol}, pero seleccionó ${role}`);
-                errorMessage.textContent = 'Usuario o contraseña incorrecto';
-                errorMessage.style.display = 'block';
+                const mensaje = `Este usuario es ${usuario.rol}. Selecciona: ${usuario.rol}`;
+                showMessage(`⚠️ ${mensaje}`, 'warning');
+                roleSelect.value = usuario.rol;
                 return;
             }
             
-            // Todas las validaciones pasaron - permitir login
+            // Guardar datos en localStorage
             localStorage.setItem('currentUser', username);
             localStorage.setItem('userRole', usuario.rol);
             localStorage.setItem('userId', '1');
             localStorage.setItem('userName', usuario.nombre);
+            localStorage.setItem('loginMethod', 'local');
             
-            console.log('✅ Login local exitoso:', username, 'rol:', usuario.rol);
+            console.log('✅ Login local exitoso');
+            showMessage('✅ Redirigiendo...', 'success');
             
             // Redirigir
-            errorMessage.style.display = 'none';
-            window.location.href = 'dashboard.html';
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
         }
         
-        // ==================== INICIALIZACIÓN ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎬 Página de login cargada');
+        // ==================== FUNCIONES AUXILIARES ====================
+        function showMessage(message, type) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
             
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', login);
-                console.log('✅ Formulario de login configurado');
-            } else {
-                console.error('❌ No se encontró el formulario');
+            // Colores según tipo
+            switch(type) {
+                case 'success':
+                    errorDiv.style.color = '#2c5530';
+                    errorDiv.style.background = '#e8f5e8';
+                    errorDiv.style.padding = '10px';
+                    errorDiv.style.borderRadius = '5px';
+                    break;
+                case 'warning':
+                    errorDiv.style.color = '#856404';
+                    errorDiv.style.background = '#fff3cd';
+                    errorDiv.style.padding = '10px';
+                    errorDiv.style.borderRadius = '5px';
+                    break;
+                case 'error':
+                    errorDiv.style.color = '#721c24';
+                    errorDiv.style.background = '#f8d7da';
+                    errorDiv.style.padding = '10px';
+                    errorDiv.style.borderRadius = '5px';
+                    break;
             }
             
-            // Verificar backend al cargar
-            verificarBackend();
+            // Ocultar mensaje después de 5 segundos
+            if (type !== 'error') {
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        function setupAutocomplete() {
+            // Para facilitar pruebas
+            usernameInput.addEventListener('focus', function() {
+                if (!this.value) {
+                    this.value = 'mesero1';
+                    passwordInput.value = '123';
+                    roleSelect.value = 'mesero';
+                }
+            });
             
-            // Poner foco en el campo de usuario
-            document.getElementById('username').focus();
-        });
+            // Tecla rápida para pruebas (Ctrl+Shift+D)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                    usernameInput.value = 'mesero1';
+                    passwordInput.value = '123';
+                    roleSelect.value = 'mesero';
+                    console.log('🔧 Datos de prueba cargados');
+                }
+            });
+        }
+        
+        // ==================== DEBUG ====================
+        console.log('=== RESTAURANTE OMNISAZÓN ===');
+        console.log('Frontend:', window.location.href);
+        console.log('Backend config:', BACKEND_URL);
+        console.log('LocalStorage disponible:', typeof localStorage !== 'undefined');
     </script>
 </body>
 </html>
