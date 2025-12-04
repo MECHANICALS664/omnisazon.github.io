@@ -3,227 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurante OmnisaZón - Login</title>
+    <title>OmniSazón - Login</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            min-height: 100vh;
             display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* ===== LADO IZQUIERDO - LOGIN ===== */
+        .login-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            padding: 60px 80px;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            color: white;
+            position: relative;
         }
 
         .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
             max-width: 400px;
-            padding: 40px;
-            text-align: center;
+            width: 100%;
         }
 
         .logo {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .logo h1 {
-            color: #047857;
-            font-size: 28px;
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
             margin-bottom: 5px;
         }
 
-        .logo p {
-            color: #666;
-            font-size: 14px;
+        .logo .tagline {
+            font-size: 16px;
+            color: #b0b0b0;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text {
+            font-size: 20px;
+            margin-bottom: 40px;
+            color: #fff;
+            font-weight: 300;
         }
 
         .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
             font-weight: 600;
             font-size: 14px;
+            color: #ddd;
         }
 
-        input, select {
+        .form-input {
             width: 100%;
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s ease;
         }
 
-        input:focus, select:focus {
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus {
             outline: none;
-            border-color: #10b981;
+            border-color: #4CAF50;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .login-btn {
-            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            width: 100%;
+            padding: 16px;
+            background: #4CAF50;
             color: white;
             border: none;
-            padding: 16px;
-            width: 100%;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: background 0.3s ease;
             margin-top: 10px;
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            background: #45a049;
         }
 
-        .login-btn:active {
-            transform: translateY(0);
+        .links {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .link:hover {
+            color: #45a049;
+            text-decoration: underline;
         }
 
         .error-message {
-            background-color: #fee2e2;
-            color: #dc2626;
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
             padding: 12px;
             border-radius: 8px;
             margin-top: 20px;
             display: none;
             font-size: 14px;
-            border: 1px solid #fecaca;
+            border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
-        .demo-credentials {
-            margin-top: 25px;
-            padding: 15px;
-            background: #f0fdf4;
-            border-radius: 10px;
-            font-size: 13px;
-            color: #065f46;
-            text-align: left;
-            border: 1px solid #a7f3d0;
+        /* ===== LADO DERECHO - INFORMACIÓN ===== */
+        .info-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
         }
 
-        .demo-credentials h3 {
-            color: #065f46;
-            margin-bottom: 10px;
-            font-size: 14px;
+        .info-content {
+            max-width: 500px;
         }
 
-        .demo-credentials ul {
+        .thank-you {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .highlights {
             list-style: none;
-            padding-left: 10px;
         }
 
-        .demo-credentials li {
-            margin-bottom: 5px;
-            padding-left: 15px;
-            position: relative;
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #444;
         }
 
-        .demo-credentials li:before {
-            content: "•";
-            color: #10b981;
-            position: absolute;
-            left: 0;
+        .check-icon {
+            color: #4CAF50;
+            font-size: 20px;
+            margin-right: 12px;
         }
 
         .footer {
-            margin-top: 20px;
-            color: #888;
-            font-size: 12px;
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
         }
 
-        .role-tag {
-            display: inline-block;
-            padding: 4px 12px;
-            background-color: #d1fae5;
-            color: #065f46;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin: 0 3px;
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .login-side, .info-side {
+                padding: 40px 30px;
+            }
+            
+            .info-side {
+                order: -1;
+                padding-top: 60px;
+            }
+            
+            .footer {
+                position: relative;
+                margin-top: 30px;
+                bottom: auto;
+            }
         }
 
         @media (max-width: 480px) {
-            .login-container {
+            .login-side, .info-side {
                 padding: 30px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 28px;
+            }
+            
+            .welcome-title {
+                font-size: 26px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
-            <h1>🍽️ OmnisaZón</h1>
-            <p>Sistema de Gestión de Restaurante</p>
-            <p style="margin-top: 10px; font-size: 12px;">
-                Roles disponibles: 
-                <span class="role-tag">admin</span>
-                <span class="role-tag">mesero</span>
-                <span class="role-tag">cocinero</span>
-            </p>
+    <!-- LADO IZQUIERDO - FORMULARIO DE LOGIN -->
+    <div class="login-side">
+        <div class="login-container">
+            <div class="logo">
+                <h1>OmniSazón</h1>
+                <div class="tagline">Todos los sabores en un solo lugar</div>
+            </div>
+            
+            <div class="welcome-text">Bienvenido al sistema</div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" class="form-input" placeholder="Ingresa tu usuario" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <div class="password-container">
+                        <input type="password" id="password" class="form-input" placeholder="Ingresa tu contraseña" required>
+                        <button type="button" class="show-password" id="togglePassword">Mostrar</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">Rol:</label>
+                    <select id="role" class="form-input" required>
+                        <option value="">Selecciona tu rol</option>
+                        <option value="admin">Administrador</option>
+                        <option value="mesero">Mesero</option>
+                        <option value="cocinero">Cocinero</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="login-btn">Iniciar Sesión</button>
+                
+                <div id="errorMessage" class="error-message">
+                    Usuario o contraseña incorrecto
+                </div>
+                
+                <div class="links">
+                    <a href="#" class="link">¿Olvidaste tu contraseña?</a>
+                    <a href="#" class="link">Registrar nuevo empleado</a>
+                </div>
+            </form>
+            
+            <div class="footer">
+                ¡Gracias por visitarnos!
+            </div>
         </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Usuario</label>
-                <input type="text" id="username" placeholder="Ingresa tu usuario" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
-            </div>
-
-            <div class="form-group">
-                <label for="role">Rol</label>
-                <select id="role" required>
-                    <option value="">Selecciona tu rol</option>
-                    <option value="admin">Administrador</option>
-                    <option value="mesero">Mesero</option>
-                    <option value="cocinero">Cocinero</option>
-                </select>
-            </div>
-
-            <button type="submit" class="login-btn">🔓 Iniciar Sesión</button>
-
-            <div id="errorMessage" class="error-message">
-                Usuario o contraseña incorrecto
-            </div>
-        </form>
-
-        <div class="demo-credentials">
-            <h3>👥 Credenciales de prueba:</h3>
-            <ul>
-                <li><strong>admin</strong> / 123 (Rol: <span class="role-tag">admin</span>)</li>
-                <li><strong>mesero1</strong> / 123 (Rol: <span class="role-tag">mesero</span>)</li>
-                <li><strong>mesero2</strong> / 123 (Rol: <span class="role-tag">mesero</span>)</li>
-                <li><strong>cocinero1</strong> / 123 (Rol: <span class="role-tag">cocinero</span>)</li>
-                <li><strong>cocinero2</strong> / 123 (Rol: <span class="role-tag">cocinero</span>)</li>
+    </div>
+    
+    <!-- LADO DERECHO - INFORMACIÓN DEL RESTAURANTE -->
+    <div class="info-side">
+        <div class="info-content">
+            <div class="welcome-title">Bienvenido a OmniSazón</div>
+            
+            <p class="description">
+                Donde la tradición y la innovación se encuentran. Más de 20 años creando experiencias culinarias únicas con los sabores más auténticos de la región.
+            </p>
+            
+            <ul class="highlights">
+                <li class="highlight-item">
+                    <span class="check-icon">✓</span>
+                    Cocina Internacional
+                </li>
+                <li class="highlight-item">
+                    <span class="check-icon">✓</span>
+                    Opciones Vegetarianas
+                </li>
+                <li class="highlight-item">
+                    <span class="check-icon">✓</span>
+                    Eventos Especiales
+                </li>
             </ul>
-            <p style="margin-top: 10px; font-style: italic;">
-                💡 Todos usan la misma contraseña: <strong>123</strong>
-            </p>
-        </div>
-
-        <div class="footer">
-            <p>© 2024 Restaurante OmnisaZón | Sistema v1.0</p>
-            <p id="connectionStatus">🔍 Verificando conexión...</p>
         </div>
     </div>
 
@@ -231,26 +345,29 @@
         // ==================== CONFIGURACIÓN ====================
         const BACKEND_URL = 'http://localhost:5000';
         
-        // ==================== DEBUG ====================
-        console.log('=== RESTAURANTE OMNISAZÓN ===');
-        console.log('Frontend cargado desde:', window.location.href);
-        console.log('Backend configurado en:', BACKEND_URL);
+        // ==================== FUNCIONALIDAD MOSTRAR/OCULTAR CONTRASEÑA ====================
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.getElementById('togglePassword');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = 'Ocultar';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.textContent = 'Mostrar';
+            }
+        });
         
         // ==================== VERIFICAR CONEXIÓN ====================
         async function verificarBackend() {
             try {
-                console.log('🔍 Verificando conexión al backend...');
                 const response = await fetch(`${BACKEND_URL}/`);
                 const data = await response.json();
                 console.log('✅ Backend conectado:', data.message);
-                document.getElementById('connectionStatus').innerHTML = '✅ Conectado al servidor';
-                document.getElementById('connectionStatus').style.color = '#10b981';
                 return true;
             } catch (error) {
-                console.error('❌ Backend no disponible:', error);
-                console.log('⚠️ Se usará modo local como respaldo');
-                document.getElementById('connectionStatus').innerHTML = '⚠️ Usando modo local (sin servidor)';
-                document.getElementById('connectionStatus').style.color = '#f59e0b';
+                console.log('⚠️ Usando modo local (sin servidor)');
                 return false;
             }
         }
@@ -326,7 +443,6 @@
                     localStorage.setItem('userName', data.user.nombre);
                     
                     console.log('✅ Login exitoso con backend');
-                    console.log('Usuario:', data.user);
                     
                     // Redirigir
                     errorMessage.style.display = 'none';
@@ -413,11 +529,6 @@
             
             // Verificar backend al cargar
             verificarBackend();
-            
-            // NO rellenar automáticamente - campos vacíos para que el usuario escriba
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('role').value = '';
             
             // Poner foco en el campo de usuario
             document.getElementById('username').focus();
