@@ -414,10 +414,13 @@
             // Verificar backend al cargar
             verificarBackend();
             
-            // Rellenar automáticamente para pruebas
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = '123';
-            document.getElementById('role').value = 'admin';
+            // NO rellenar automáticamente - campos vacíos para que el usuario escriba
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('role').value = '';
+            
+            // Poner foco en el campo de usuario
+            document.getElementById('username').focus();
         });
     </script>
 </body>
