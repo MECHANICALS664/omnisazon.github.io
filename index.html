@@ -159,6 +159,22 @@
             border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
+        /* ===== CUADRO INFORMATIVO ===== */
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ddd;
+            font-style: italic;
+        }
+
         /* ===== LADO DERECHO - INFORMACIÓN ===== */
         .info-side {
             flex: 1;
@@ -174,13 +190,6 @@
 
         .info-content {
             max-width: 500px;
-        }
-
-        .thank-you {
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-weight: 600;
         }
 
         .welcome-title {
@@ -301,6 +310,11 @@
                 
                 <div id="errorMessage" class="error-message">
                     Usuario o contraseña incorrecto
+                </div>
+                
+                <!-- CUADRO INFORMATIVO AL LADO DEL LOGIN -->
+                <div class="info-box">
+                    <p>Donde la tradición y la innovación están más de 20 años creando experiencias culinarias únicas con los sabores más tradicionales del país.</p>
                 </div>
                 
                 <div class="links">
