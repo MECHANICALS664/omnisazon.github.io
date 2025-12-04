@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -36,7 +36,7 @@
         }
 
         .logo h1 {
-            color: #333;
+            color: #047857;
             font-size: 28px;
             margin-bottom: 5px;
         }
@@ -70,11 +70,11 @@
 
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #10b981;
         }
 
         .login-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
             color: white;
             border: none;
             padding: 16px;
@@ -89,7 +89,7 @@
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
         }
 
         .login-btn:active {
@@ -97,27 +97,29 @@
         }
 
         .error-message {
-            background-color: #fee;
-            color: #c33;
+            background-color: #fee2e2;
+            color: #dc2626;
             padding: 12px;
             border-radius: 8px;
             margin-top: 20px;
             display: none;
             font-size: 14px;
+            border: 1px solid #fecaca;
         }
 
         .demo-credentials {
             margin-top: 25px;
             padding: 15px;
-            background: #f8f9fa;
+            background: #f0fdf4;
             border-radius: 10px;
             font-size: 13px;
-            color: #666;
+            color: #065f46;
             text-align: left;
+            border: 1px solid #a7f3d0;
         }
 
         .demo-credentials h3 {
-            color: #333;
+            color: #065f46;
             margin-bottom: 10px;
             font-size: 14px;
         }
@@ -135,7 +137,7 @@
 
         .demo-credentials li:before {
             content: "•";
-            color: #667eea;
+            color: #10b981;
             position: absolute;
             left: 0;
         }
@@ -144,6 +146,17 @@
             margin-top: 20px;
             color: #888;
             font-size: 12px;
+        }
+
+        .role-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: #d1fae5;
+            color: #065f46;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 3px;
         }
 
         @media (max-width: 480px) {
@@ -158,6 +171,12 @@
         <div class="logo">
             <h1>🍽️ OmnisaZón</h1>
             <p>Sistema de Gestión de Restaurante</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                Roles disponibles: 
+                <span class="role-tag">admin</span>
+                <span class="role-tag">mesero</span>
+                <span class="role-tag">cocinero</span>
+            </p>
         </div>
 
         <form id="loginForm">
@@ -184,16 +203,18 @@
             <button type="submit" class="login-btn">🔓 Iniciar Sesión</button>
 
             <div id="errorMessage" class="error-message">
-                Usuario o contraseña incorrectos
+                Usuario o contraseña incorrecto
             </div>
         </form>
 
         <div class="demo-credentials">
             <h3>👥 Credenciales de prueba:</h3>
             <ul>
-                <li><strong>admin</strong> / 123 (Rol: Administrador)</li>
-                <li><strong>mesero1</strong> / 123 (Rol: Mesero)</li>
-                <li><strong>cocinero1</strong> / 123 (Rol: Cocinero)</li>
+                <li><strong>admin</strong> / 123 (Rol: <span class="role-tag">admin</span>)</li>
+                <li><strong>mesero1</strong> / 123 (Rol: <span class="role-tag">mesero</span>)</li>
+                <li><strong>mesero2</strong> / 123 (Rol: <span class="role-tag">mesero</span>)</li>
+                <li><strong>cocinero1</strong> / 123 (Rol: <span class="role-tag">cocinero</span>)</li>
+                <li><strong>cocinero2</strong> / 123 (Rol: <span class="role-tag">cocinero</span>)</li>
             </ul>
             <p style="margin-top: 10px; font-style: italic;">
                 💡 Todos usan la misma contraseña: <strong>123</strong>
@@ -223,13 +244,13 @@
                 const data = await response.json();
                 console.log('✅ Backend conectado:', data.message);
                 document.getElementById('connectionStatus').innerHTML = '✅ Conectado al servidor';
-                document.getElementById('connectionStatus').style.color = 'green';
+                document.getElementById('connectionStatus').style.color = '#10b981';
                 return true;
             } catch (error) {
                 console.error('❌ Backend no disponible:', error);
                 console.log('⚠️ Se usará modo local como respaldo');
                 document.getElementById('connectionStatus').innerHTML = '⚠️ Usando modo local (sin servidor)';
-                document.getElementById('connectionStatus').style.color = 'orange';
+                document.getElementById('connectionStatus').style.color = '#f59e0b';
                 return false;
             }
         }
@@ -238,7 +259,7 @@
         async function login(event) {
             event.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const role = document.getElementById('role').value;
             const errorMessage = document.getElementById('errorMessage');
@@ -247,14 +268,19 @@
             
             // Validaciones básicas
             if (!role) {
-                alert('❌ Por favor selecciona un rol');
+                errorMessage.textContent = 'Por favor selecciona un rol';
+                errorMessage.style.display = 'block';
                 return;
             }
             
             if (!username || !password) {
-                alert('❌ Usuario y contraseña son requeridos');
+                errorMessage.textContent = 'Usuario y contraseña son requeridos';
+                errorMessage.style.display = 'block';
                 return;
             }
+            
+            // Ocultar mensajes de error previos
+            errorMessage.style.display = 'none';
             
             // Primero intentar con el backend
             const backendDisponible = await verificarBackend();
@@ -288,8 +314,8 @@
                 if (data.success) {
                     // Verificar que el rol coincida
                     if (data.user.rol !== role) {
-                        alert(`⚠️ Tu cuenta es de ${data.user.rol}\nPor favor selecciona: ${data.user.rol}`);
-                        document.getElementById('role').value = data.user.rol;
+                        errorMessage.textContent = 'Usuario o contraseña incorrecto';
+                        errorMessage.style.display = 'block';
                         return;
                     }
                     
@@ -308,12 +334,14 @@
                     
                 } else {
                     console.warn('❌ Backend rechazó login:', data.message);
-                    // Intentar con login local como respaldo
-                    loginLocal(username, password, role, errorMessage);
+                    errorMessage.textContent = 'Usuario o contraseña incorrecto';
+                    errorMessage.style.display = 'block';
                 }
                 
             } catch (error) {
                 console.error('🌐 Error de conexión:', error);
+                errorMessage.textContent = 'Error de conexión. Usando modo local...';
+                errorMessage.style.display = 'block';
                 // Usar login local como respaldo
                 loginLocal(username, password, role, errorMessage);
             }
@@ -332,35 +360,33 @@
                 'cocinero2': { rol: 'cocinero', nombre: 'María González', password: '123' }
             };
             
-            // Verificación 1: usuario existe
+            // Verificar si el usuario existe
             if (!usuariosLocales[username]) {
                 console.warn('❌ Usuario no existe:', username);
-                errorMessage.textContent = `Usuario no existe. Usa: admin, mesero1, mesero2, cocinero1 o cocinero2`;
+                errorMessage.textContent = 'Usuario o contraseña incorrecto';
                 errorMessage.style.display = 'block';
                 return;
             }
             
             const usuario = usuariosLocales[username];
             
-            // Verificación 2: contraseña correcta
+            // Verificar contraseña
             if (password !== usuario.password) {
                 console.warn('❌ Contraseña incorrecta para:', username);
-                errorMessage.textContent = 'Contraseña incorrecta. Usa: 123';
+                errorMessage.textContent = 'Usuario o contraseña incorrecto';
                 errorMessage.style.display = 'block';
                 return;
             }
             
-            // Verificación 3: rol coincide
+            // Verificar rol
             if (usuario.rol !== role) {
                 console.warn(`❌ Rol incorrecto. Usuario ${username} es ${usuario.rol}, pero seleccionó ${role}`);
-                errorMessage.textContent = `Usuario incorrecto para ese rol. El usuario "${username}" es ${usuario.rol}`;
+                errorMessage.textContent = 'Usuario o contraseña incorrecto';
                 errorMessage.style.display = 'block';
-                document.getElementById('role').value = usuario.rol;
                 return;
             }
             
             // Todas las validaciones pasaron - permitir login
-            // Guardar información
             localStorage.setItem('currentUser', username);
             localStorage.setItem('userRole', usuario.rol);
             localStorage.setItem('userId', '1');
