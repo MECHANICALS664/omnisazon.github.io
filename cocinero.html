@@ -315,6 +315,11 @@
             font-style: italic;
         }
 
+        /* CORRECCIÓN 1: Agregar clase CSS faltante */
+        .hidden {
+            display: none !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .orders-grid {
@@ -413,8 +418,21 @@
             
             console.log('Página de cocinero cargada correctamente');
             
-            // Actualizar automáticamente cada 5 segundos
-            setInterval(loadOrders, 5000);
+            // Actualizar automáticamente cada 2 segundos (más rápido)
+            setInterval(loadOrders, 2000);
+            
+            // CORRECCIÓN 2: Escuchar cambios en localStorage en tiempo real
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'kitchenOrders' || event.key === 'lastOrderUpdate') {
+                    console.log('📡 Cambio detectado en pedidos, actualizando...');
+                    loadOrders();
+                    
+                    // Mostrar notificación de nuevo pedido
+                    if (event.key === 'lastOrderUpdate') {
+                        showNotification('🆕 ¡Nuevo pedido recibido!');
+                    }
+                }
+            });
         });
 
         // ==================== CARGAR PEDIDOS ====================
@@ -453,7 +471,12 @@
             }
             
             // Ordenar pedidos: más recientes primero
-            orders.sort((a, b) => b.id - a.id);
+            orders.sort((a, b) => {
+                // Manejar tanto IDs numéricos como strings
+                const idA = typeof a.id === 'string' ? parseInt(a.id.replace(/\D/g, '')) || 0 : a.id;
+                const idB = typeof b.id === 'string' ? parseInt(b.id.replace(/\D/g, '')) || 0 : b.id;
+                return idB - idA;
+            });
             
             // Procesar cada pedido
             orders.forEach(order => {
@@ -493,17 +516,31 @@
             orderCard.className = `order-card ${status}`;
             orderCard.id = `order-${order.id}`;
             
-            // Calcular tiempo transcurrido
-            const orderTime = new Date(order.id); // Usamos el ID como timestamp
-            const now = new Date();
-            const diffMinutes = Math.floor((now - orderTime) / (1000 * 60));
-            
-            let timeText = order.timestamp;
-            if (diffMinutes < 1) {
-                timeText += ' (Ahora)';
-            } else if (diffMinutes < 60) {
-                timeText += ` (Hace ${diffMinutes} min)`;
+            // Calcular tiempo transcurrido (manejo seguro)
+            let timeText = order.timestamp || 'Reciente';
+            try {
+                // Intentar obtener timestamp del ID
+                const timestamp = typeof order.id === 'string' 
+                    ? parseInt(order.id.replace(/\D/g, '')) 
+                    : order.id;
+                
+                if (timestamp && !isNaN(timestamp)) {
+                    const orderTime = new Date(timestamp);
+                    const now = new Date();
+                    const diffMinutes = Math.floor((now - orderTime) / (1000 * 60));
+                    
+                    if (diffMinutes < 1) {
+                        timeText += ' (Ahora)';
+                    } else if (diffMinutes < 60) {
+                        timeText += ` (Hace ${diffMinutes} min)`;
+                    }
+                }
+            } catch (e) {
+                console.warn('Error calculando tiempo:', e);
             }
+            
+            // Asegurar que order.id sea string para el onclick
+            const orderIdForClick = typeof order.id === 'string' ? `'${order.id}'` : order.id;
             
             orderCard.innerHTML = `
                 <div class="order-header">
@@ -537,7 +574,7 @@
                 </div>
                 
                 ${status === 'pending' ? `
-                    <button class="complete-btn" onclick="completeOrder(${order.id})">
+                    <button class="complete-btn" onclick="completeOrder(${orderIdForClick})">
                         ✅ Marcar como Terminado
                     </button>
                 ` : `
@@ -557,8 +594,14 @@
             // Obtener pedidos actuales
             const orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
             
-            // Encontrar y actualizar el pedido
-            const orderIndex = orders.findIndex(order => order.id === orderId);
+            // Encontrar y actualizar el pedido (comparación flexible)
+            const orderIndex = orders.findIndex(order => {
+                // Comparar tanto números como strings
+                if (typeof order.id === 'string' && typeof orderId === 'string') {
+                    return order.id === orderId;
+                }
+                return order.id == orderId; // Doble igual para comparación flexible
+            });
             
             if (orderIndex !== -1) {
                 orders[orderIndex].status = 'completado';
@@ -568,13 +611,16 @@
                 // Guardar cambios
                 localStorage.setItem('kitchenOrders', JSON.stringify(orders));
                 
+                // Disparar evento para sincronización
+                localStorage.setItem('lastOrderUpdate', Date.now().toString());
+                
                 // Mostrar notificación
                 showNotification('✅ Pedido marcado como terminado!');
                 
                 // Recargar la vista
                 setTimeout(() => {
                     loadOrders();
-                }, 1000);
+                }, 500);
                 
                 console.log('Pedido completado:', orders[orderIndex]);
             } else {
@@ -589,6 +635,27 @@
             notification.textContent = message;
             notification.style.display = 'block';
             
+            // Sonido de notificación opcional
+            try {
+                // Intentar reproducir sonido simple
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                // Silencioso si falla el audio
+            }
+            
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 3000);
@@ -600,12 +667,6 @@
             if (pending > 6 || completed > 6) {
                 console.log('📜 Muchos pedidos - Scroll habilitado');
             }
-        }
-
-        // ==================== FUNCIONES ADICIONALES ====================
-        function playNotificationSound() {
-            // Podrías agregar un sonido aquí si quieres
-            console.log('🔔 Nuevo pedido recibido!');
         }
     </script>
 </body>
