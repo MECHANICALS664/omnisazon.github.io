@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OmniSazón - Panel Principal</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .user-info {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .user-info h1 {
+            color: #2c5530;
+            margin-bottom: 10px;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .module-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .module-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .module-card h3 {
+            color: #2c5530;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .module-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .admin-card { 
+            border-top: 5px solid #e74c3c;
+        }
+        
+        .mesero-card { 
+            border-top: 5px solid #3498db;
+        }
+        
+        .cocinero-card { 
+            border-top: 5px solid #2ecc71;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .user-welcome {
+            font-size: 20px;
+            color: #4a7c59;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="user-info">
+            <h1>🏠 Panel Principal - OmniSazón</h1>
+            <div class="user-welcome" id="userWelcome">Bienvenido</div>
+            <button onclick="logout()" class="logout-btn">🚪 Cerrar Sesión</button>
+        </div>
+
+        <!-- Módulo ADMIN -->
+        <div id="adminModule" class="modules-grid hidden">
+            <a href="admin.html" class="module-card admin-card">
+                <div class="module-icon">📊</div>
+                <h3>Panel de Ventas</h3>
+                <p>Ver reportes de ventas, estadísticas y ganancias del restaurante</p>
+                <small>Solo visible para administradores</small>
+            </a>
+        </div>
+
+        <!-- Módulo MESERO -->
+        <div id="meseroModule" class="modules-grid hidden">
+            <a href="mesero.html" class="module-card mesero-card">
+                <div class="module-icon">📝</div>
+                <h3>Tomar Pedidos</h3>
+                <p>Crear nuevos pedidos, enviar órdenes a cocina y gestionar mesas</p>
+                <small>Solo visible para meseros</small>
+            </a>
+        </div>
+
+        <!-- Módulo COCINERO -->
+        <div id="cocineroModule" class="modules-grid hidden">
+            <a href="cocinero.html" class="module-card cocinero-card">
+                <div class="module-icon">👨‍🍳</div>
+                <h3>Preparar Pedidos</h3>
+                <p>Ver pedidos pendientes, marcar como terminados y gestionar cocina</p>
+                <small>Solo visible para cocineros</small>
+            </a>
+        </div>
+
+        <!-- Mensaje si no hay rol -->
+        <div id="noRoleMessage" class="user-info hidden">
+            <h2>❌ Error de permisos</h2>
+            <p>No se pudo identificar tu rol. Por favor, vuelve a iniciar sesión.</p>
+            <button onclick="logout()" class="logout-btn">Volver al Login</button>
+        </div>
+    </div>
+
+    <script>
+        // Verificar qué usuario está logueado
+        function checkUser() {
+            const currentUser = localStorage.getItem('currentUser');
+            const userRole = localStorage.getItem('userRole');
+            
+            console.log('Datos del usuario:', { currentUser, userRole });
+            
+            if (!currentUser || !userRole) {
+                // Si no hay usuario, regresar al login
+                alert('No hay sesión activa. Redirigiendo al login...');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Mostrar información del usuario
+            document.getElementById('userWelcome').textContent = 
+                `Bienvenido ${currentUser} - Rol: ${userRole}`;
+            
+            // Ocultar todos los módulos primero
+            document.getElementById('adminModule').classList.add('hidden');
+            document.getElementById('meseroModule').classList.add('hidden');
+            document.getElementById('cocineroModule').classList.add('hidden');
+            document.getElementById('noRoleMessage').classList.add('hidden');
+            
+            // Mostrar solo el módulo correspondiente al rol
+            if (userRole === 'admin') {
+                document.getElementById('adminModule').classList.remove('hidden');
+            } else if (userRole === 'mesero') {
+                document.getElementById('meseroModule').classList.remove('hidden');
+            } else if (userRole === 'cocinero') {
+                document.getElementById('cocineroModule').classList.remove('hidden');
+            } else {
+                document.getElementById('noRoleMessage').classList.remove('hidden');
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userRole');
+            window.location.href = 'index.html';
+        }
+        
+        // Verificar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard cargado');
+            checkUser();
+        });
+        
+        // También verificar si la página ya está cargada
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkUser);
+        } else {
+            checkUser();
+        }
+    </script>
+</body>
+</html>
