@@ -1,6 +1,6 @@
 // ==================== CARGAR MENÚ (INTENTA BACKEND → FALLBACK menu.json) ====================
+// Nota: BACKEND_URL se carga desde config.js
 
-const BACKEND_URL = 'http://localhost:5000';
 let platillosDelBackend = []; // Guardar platillos cargados
 
 async function cargarMenuDesdeBackend() {
