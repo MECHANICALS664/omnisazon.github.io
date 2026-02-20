@@ -439,8 +439,6 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
-    <script src="api-sync.js"></script>
     <script src="cargar-menu.js"></script>
     <script>
         // ==================== DATOS DEL MENÚ MEXICANO ====================
@@ -660,7 +658,7 @@
         }
 
         // ==================== ENVIAR A COCINA ====================
-        async function sendToKitchen() {
+        function sendToKitchen() {
             if (currentOrder.length === 0) {
                 alert('❌ Agrega items al pedido primero');
                 return;
@@ -672,6 +670,9 @@
                 alert('❌ Por favor ingresa un número de mesa válido');
                 return;
             }
+            
+            // Obtener pedidos existentes o crear array vacío
+            const orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
             
             // Crear nuevo pedido
             const newOrder = {
@@ -685,20 +686,17 @@
                 date: new Date().toLocaleDateString()
             };
             
-            // Intentar enviar al backend
-            console.log('📤 Enviando pedido al backend...');
-            const result = await orderSync.sendOrderToBackend(newOrder);
+            // Agregar a la lista de pedidos
+            orders.push(newOrder);
             
-            if (result.success) {
-                console.log('✅ Pedido sincronizado con backend');
-            } else if (result.savedLocally) {
-                console.log('⚠️ Pedido guardado localmente (sin conexión al backend)');
-            }
+            // Guardar en localStorage
+            localStorage.setItem('kitchenOrders', JSON.stringify(orders));
             
             // Mostrar mensaje de éxito con opciones
             showOrderSummary(newOrder);
             
             console.log('Pedido enviado a cocina:', newOrder);
+            console.log('Total de pedidos en cocina:', orders.length);
         }
 
         // ==================== MOSTRAR RESUMEN DEL PEDIDO ENVIADO ====================

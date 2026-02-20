@@ -393,12 +393,8 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
-    <script src="api-sync.js"></script>
     <script>
         // ==================== INICIALIZACIÓN ====================
-        let autoSyncActive = false;
-
         document.addEventListener('DOMContentLoaded', function() {
             // Mostrar nombre del cocinero
             const cocineroName = localStorage.getItem('currentUser') || 'Cocinero';
@@ -417,37 +413,18 @@
             
             console.log('Página de cocinero cargada correctamente');
             
-            // Iniciar sincronización automática con backend
-            autoSyncActive = true;
-            orderSync.startAutoSync(handleOrdersUpdate);
+            // Actualizar automáticamente cada 5 segundos
+            setInterval(loadOrders, 5000);
         });
 
-        // ==================== MANEJAR ACTUALIZACIÓN DE PEDIDOS ====================
-        function handleOrdersUpdate(orders) {
-            console.log('📥 Pedidos actualizados desde backend:', orders.length);
-            updateOrderDisplay(orders);
-        }
-
         // ==================== CARGAR PEDIDOS ====================
-        async function loadOrders() {
+        function loadOrders() {
             console.log('🔄 Cargando pedidos...');
             
-            // Intentar obtener del backend primero
-            const backendOrders = await orderSync.getKitchenOrders();
-            let orders = backendOrders;
+            // Obtener pedidos del localStorage
+            const orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
+            console.log('Pedidos encontrados:', orders);
             
-            // Fallback a localStorage si no hay conexión
-            if (!Array.isArray(orders) || orders.length === 0) {
-                console.log('⚠️ Usando pedidos del localStorage');
-                orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
-            }
-            
-            console.log('Pedidos encontrados:', orders.length);
-            updateOrderDisplay(orders);
-        }
-
-        // ==================== ACTUALIZAR VISUALIZACIÓN DE PEDIDOS ====================
-        function updateOrderDisplay(orders) {
             const pendingContainer = document.getElementById('pendingOrders');
             const completedContainer = document.getElementById('completedOrders');
             const emptyState = document.getElementById('emptyState');
@@ -574,33 +551,36 @@
         }
 
         // ==================== MARCAR PEDIDO COMO TERMINADO ====================
-        async function completeOrder(orderId) {
-            console.log('✅ Completando pedido:', orderId);
+        function completeOrder(orderId) {
+            console.log('Completando pedido:', orderId);
             
-            // Intentar actualizar en backend
-            const result = await orderSync.updateOrderStatus(orderId, 'completado');
+            // Obtener pedidos actuales
+            const orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
             
-            if (result.success) {
-                console.log('✅ Pedido actualizado en backend');
-            } else {
-                console.log('⚠️ Actualizando solo en localStorage');
-                // Fallback: actualizar localmente
-                const orders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
-                const orderIndex = orders.findIndex(order => order.id === orderId);
+            // Encontrar y actualizar el pedido
+            const orderIndex = orders.findIndex(order => order.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = 'completado';
+                orders[orderIndex].completedAt = new Date().toLocaleTimeString();
+                orders[orderIndex].completedBy = localStorage.getItem('currentUser') || 'Cocinero';
                 
-                if (orderIndex !== -1) {
-                    orders[orderIndex].status = 'completado';
-                    localStorage.setItem('kitchenOrders', JSON.stringify(orders));
-                }
+                // Guardar cambios
+                localStorage.setItem('kitchenOrders', JSON.stringify(orders));
+                
+                // Mostrar notificación
+                showNotification('✅ Pedido marcado como terminado!');
+                
+                // Recargar la vista
+                setTimeout(() => {
+                    loadOrders();
+                }, 1000);
+                
+                console.log('Pedido completado:', orders[orderIndex]);
+            } else {
+                console.error('Pedido no encontrado:', orderId);
+                alert('❌ Error: No se encontró el pedido');
             }
-            
-            // Mostrar notificación
-            showNotification('✅ Pedido marcado como terminado!');
-            
-            // Recargar la vista
-            setTimeout(() => {
-                loadOrders();
-            }, 1000);
         }
 
         // ==================== NOTIFICACIÓN ====================
